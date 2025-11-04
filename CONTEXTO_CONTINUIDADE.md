@@ -1,7 +1,7 @@
 # Contexto de Continuidade - Projeto Redime
 
 **Última Atualização**: 04/11/2024
-
+# Seguir este contexto
 ## Visão Geral do Projeto
 
 Site da **Missão Redime Chapecó** - Uma comunidade transformada pela presença de Deus, fundamentada nos pilares: **AMOR • VERDADE • MESA & DISCIPULADO**.
