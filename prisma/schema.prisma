@@ -1,0 +1,401 @@
+// Schema do Prisma para o projeto Redime
+// Configuração para PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo de Usuários
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String
+  password      String
+  role          UserRole  @default(MEMBER)
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relações
+  memberProfile MemberProfile?
+  donations     Donation[]
+  registrations EventRegistration[]
+  prayers       PrayerRequest[]
+  comments      Comment[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  LEADER
+  VOLUNTEER
+  MEMBER
+}
+
+// Perfil de Membro
+model MemberProfile {
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone           String?
+  address         String?
+  city            String?
+  state           String?
+  zipCode         String?
+  birthDate       DateTime?
+  baptismDate     DateTime?
+  membershipDate  DateTime?
+  ministries      String[]  // Array de ministérios
+  interests       String[]  // Áreas de interesse
+  photo           String?
+  bio             String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("member_profiles")
+}
+
+// Mensagens/Sermões
+model Message {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  description String?
+  videoUrl    String?
+  audioUrl    String?
+  thumbnail   String?
+  preacher    String
+  scripture   String?
+  date        DateTime
+  series      String?
+  category    MessageCategory
+  featured    Boolean   @default(false)
+  views       Int       @default(0)
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relações
+  comments    Comment[]
+
+  @@map("messages")
+}
+
+enum MessageCategory {
+  SERMON
+  TEACHING
+  DEVOTIONAL
+  TESTIMONY
+}
+
+// Eventos
+model Event {
+  id            String    @id @default(uuid())
+  title         String
+  slug          String    @unique
+  description   String
+  eventType     EventType
+  startDate     DateTime
+  endDate       DateTime?
+  location      String?
+  address       String?
+  imageUrl      String?
+  registrationOpen Boolean @default(true)
+  capacity      Int?
+  price         Float?    @default(0)
+  featured      Boolean   @default(false)
+  published     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relações
+  registrations EventRegistration[]
+
+  @@map("events")
+}
+
+enum EventType {
+  SERVICE
+  CONFERENCE
+  WORKSHOP
+  CONCERT
+  RETREAT
+  COMMUNITY
+}
+
+// Inscrições em Eventos
+model EventRegistration {
+  id          String    @id @default(uuid())
+  eventId     String
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      RegistrationStatus @default(PENDING)
+  ticketCount Int       @default(1)
+  totalPaid   Float     @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([eventId, userId])
+  @@map("event_registrations")
+}
+
+enum RegistrationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+// Sala de Oração - Pedidos
+model PrayerRequest {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  category    PrayerCategory
+  isAnonymous Boolean   @default(false)
+  isPublic    Boolean   @default(true)
+  answered    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("prayer_requests")
+}
+
+enum PrayerCategory {
+  HEALTH
+  FAMILY
+  FINANCE
+  SPIRITUAL
+  GUIDANCE
+  THANKSGIVING
+  OTHER
+}
+
+// Cursos Online
+model Course {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  description String
+  instructor  String
+  thumbnail   String?
+  videoUrl    String?
+  duration    Int?      // em minutos
+  level       CourseLevel
+  category    String
+  price       Float     @default(0)
+  featured    Boolean   @default(false)
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relações
+  lessons     Lesson[]
+  enrollments CourseEnrollment[]
+
+  @@map("courses")
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+// Lições do Curso
+model Lesson {
+  id          String    @id @default(uuid())
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  videoUrl    String
+  duration    Int       // em minutos
+  order       Int
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("lessons")
+}
+
+// Inscrições em Cursos
+model CourseEnrollment {
+  id          String    @id @default(uuid())
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userEmail   String
+  progress    Int       @default(0)
+  completed   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([courseId, userEmail])
+  @@map("course_enrollments")
+}
+
+// Posts do Blog/Notícias
+model BlogPost {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?
+  content     String
+  author      String
+  thumbnail   String?
+  category    String
+  tags        String[]
+  featured    Boolean   @default(false)
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  views       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relações
+  comments    Comment[]
+
+  @@map("blog_posts")
+}
+
+// Comentários (para Mensagens e Blog)
+model Comment {
+  id          String    @id @default(uuid())
+  content     String
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messageId   String?
+  message     Message?  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  blogPostId  String?
+  blogPost    BlogPost? @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  approved    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("comments")
+}
+
+// Doações
+model Donation {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount      Float
+  currency    String    @default("BRL")
+  type        DonationType
+  frequency   DonationFrequency
+  status      DonationStatus
+  paymentMethod String?
+  transactionId String?  @unique
+  message     String?
+  isAnonymous Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("donations")
+}
+
+enum DonationType {
+  GENERAL
+  MISSIONS
+  BUILDING
+  SPECIAL_PROJECT
+}
+
+enum DonationFrequency {
+  ONE_TIME
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// Ministérios
+model Ministry {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String
+  leader      String?
+  imageUrl    String?
+  category    MinistryCategory
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("ministries")
+}
+
+enum MinistryCategory {
+  CHILDREN
+  YOUTH
+  YOUNG_ADULTS
+  WOMEN
+  MEN
+  MUSIC
+  PRAYER
+  MISSIONS
+  OUTREACH
+  MEDIA
+}
+
+// Membros da Equipe/Líderes
+model TeamMember {
+  id          String    @id @default(uuid())
+  name        String
+  role        String
+  bio         String?
+  photo       String?
+  email       String?
+  phone       String?
+  order       Int       @default(0)
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("team_members")
+}
+
+// Configurações do Site
+model SiteSettings {
+  id          String    @id @default(uuid())
+  key         String    @unique
+  value       String
+  type        String    @default("string")
+  description String?
+  updatedAt   DateTime  @updatedAt
+
+  @@map("site_settings")
+}
+
+// Transmissões ao Vivo
+model LiveStream {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  streamUrl   String
+  chatEnabled Boolean   @default(true)
+  isLive      Boolean   @default(false)
+  scheduledAt DateTime?
+  startedAt   DateTime?
+  endedAt     DateTime?
+  viewers     Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("live_streams")
+}
