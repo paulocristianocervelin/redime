@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { serializeBigInt } from '@/lib/bigint-helper';
 
 export async function GET() {
   try {
@@ -38,7 +39,7 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json({ user });
+    return NextResponse.json({ user: serializeBigInt(user) });
   } catch (error) {
     console.error('Get current user error:', error);
     return NextResponse.json(

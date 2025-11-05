@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isLeader, isAdmin, hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { serializeBigInt } from '@/lib/bigint-helper';
 
 // GET - Buscar membro por ID
 export async function GET(
@@ -51,7 +52,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ member });
+    return NextResponse.json({ member: serializeBigInt(member) });
   } catch (error) {
     console.error('Get member error:', error);
     return NextResponse.json(
@@ -160,7 +161,7 @@ export async function PUT(
 
     return NextResponse.json({
       message: 'Membro atualizado com sucesso',
-      member,
+      member: serializeBigInt(member),
     });
   } catch (error) {
     console.error('Update member error:', error);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { serializeBigInt } from '@/lib/bigint-helper';
 
 // GET - Buscar departamento por ID
 export async function GET(
@@ -50,7 +51,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ department });
+    return NextResponse.json({ department: serializeBigInt(department) });
   } catch (error) {
     console.error('Get department error:', error);
     return NextResponse.json(
@@ -118,7 +119,7 @@ export async function PUT(
 
     return NextResponse.json({
       message: 'Departamento atualizado com sucesso',
-      department,
+      department: serializeBigInt(department),
     });
   } catch (error) {
     console.error('Update department error:', error);

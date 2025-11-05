@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { login } from '@/lib/auth';
+import { serializeBigInt } from '@/lib/bigint-helper';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: 'Login realizado com sucesso',
-      user: result.user,
+      user: serializeBigInt(result.user),
     });
   } catch (error) {
     console.error('Login error:', error);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { serializeBigInt } from '@/lib/bigint-helper';
 
 // GET - Listar todos os departamentos
 export async function GET() {
@@ -34,7 +35,7 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({ departments });
+    return NextResponse.json({ departments: serializeBigInt(departments) });
   } catch (error) {
     console.error('Get departments error:', error);
     return NextResponse.json(
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: 'Departamento criado com sucesso',
-      department,
+      department: serializeBigInt(department),
     });
   } catch (error) {
     console.error('Create department error:', error);

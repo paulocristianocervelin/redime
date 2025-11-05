@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isLeader, hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { serializeBigInt } from '@/lib/bigint-helper';
 
 // GET - Listar todos os membros
 export async function GET(request: NextRequest) {
@@ -53,7 +54,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ members });
+    return NextResponse.json({ members: serializeBigInt(members) });
   } catch (error) {
     console.error('Get members error:', error);
     return NextResponse.json(
@@ -165,7 +166,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: 'Membro criado com sucesso',
-      member,
+      member: serializeBigInt(member),
     });
   } catch (error) {
     console.error('Create member error:', error);

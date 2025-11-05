@@ -84,14 +84,11 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
               key={item.name}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className={`
-                flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
-                ${
-                  isActive
-                    ? 'bg-primary text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }
-              `}
+              className={
+                isActive
+                  ? 'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors bg-gray-100 text-gray-900 font-semibold'
+                  : 'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-50'
+              }
             >
               <item.icon className="h-5 w-5" />
               <span className="font-medium">{item.name}</span>
