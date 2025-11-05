@@ -12,21 +12,24 @@ datasource db {
 
 // Modelo de Usuários
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
+  id            BigInt    @id @default(autoincrement())
+  email         String?   @unique  // Opcional para membros básicos
   name          String
-  password      String
+  cpf           String    @unique  // CPF obrigatório
+  password      String?   // Opcional para membros sem acesso ao sistema
   role          UserRole  @default(MEMBER)
   emailVerified Boolean   @default(false)
+  active        Boolean   @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   // Relações
-  memberProfile MemberProfile?
-  donations     Donation[]
-  registrations EventRegistration[]
-  prayers       PrayerRequest[]
-  comments      Comment[]
+  memberProfile        MemberProfile?
+  donations            Donation[]
+  registrations        EventRegistration[]
+  prayers              PrayerRequest[]
+  comments             Comment[]
+  leaderOfDepartments  Department[]       @relation("DepartmentLeader")
 
   @@map("users")
 }
@@ -40,32 +43,71 @@ enum UserRole {
 
 // Perfil de Membro
 model MemberProfile {
-  id              String    @id @default(uuid())
-  userId          String    @unique
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  phone           String?
-  address         String?
+  id              BigInt      @id @default(autoincrement())
+  userId          BigInt      @unique
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone           String?     // Não obrigatório
+  address         String      // Obrigatório
   city            String?
   state           String?
   zipCode         String?
   birthDate       DateTime?
   baptismDate     DateTime?
   membershipDate  DateTime?
-  ministries      String[]  // Array de ministérios
-  interests       String[]  // Áreas de interesse
+  departmentId    BigInt?     // Departamento onde serve
+  department      Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  interests       String[]    // Áreas de interesse
   photo           String?
   bio             String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@map("member_profiles")
 }
 
+// Departamentos/Ministérios
+model Department {
+  id          BigInt             @id @default(autoincrement())
+  name        String
+  slug        String             @unique
+  description String
+  leaderId    BigInt?            // Líder do departamento
+  leader      User?              @relation("DepartmentLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+  imageUrl    String?
+  category    DepartmentCategory
+  active      Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  // Relações
+  members MemberProfile[]
+
+  @@map("departments")
+}
+
+enum DepartmentCategory {
+  CHILDREN
+  YOUTH
+  YOUNG_ADULTS
+  WOMEN
+  MEN
+  MUSIC
+  PRAYER
+  MISSIONS
+  OUTREACH
+  MEDIA
+  ADMINISTRATION
+  TECHNOLOGY
+  HOSPITALITY
+  SECURITY
+  OTHER
+}
+
 // Mensagens/Sermões
 model Message {
-  id          String    @id @default(uuid())
+  id          BigInt          @id @default(autoincrement())
   title       String
-  slug        String    @unique
+  slug        String          @unique
   description String?
   videoUrl    String?
   audioUrl    String?
@@ -75,14 +117,14 @@ model Message {
   date        DateTime
   series      String?
   category    MessageCategory
-  featured    Boolean   @default(false)
-  views       Int       @default(0)
-  published   Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  featured    Boolean         @default(false)
+  views       Int             @default(0)
+  published   Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   // Relações
-  comments    Comment[]
+  comments Comment[]
 
   @@map("messages")
 }
@@ -96,23 +138,23 @@ enum MessageCategory {
 
 // Eventos
 model Event {
-  id            String    @id @default(uuid())
-  title         String
-  slug          String    @unique
-  description   String
-  eventType     EventType
-  startDate     DateTime
-  endDate       DateTime?
-  location      String?
-  address       String?
-  imageUrl      String?
-  registrationOpen Boolean @default(true)
-  capacity      Int?
-  price         Float?    @default(0)
-  featured      Boolean   @default(false)
-  published     Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id               BigInt              @id @default(autoincrement())
+  title            String
+  slug             String              @unique
+  description      String
+  eventType        EventType
+  startDate        DateTime
+  endDate          DateTime?
+  location         String?
+  address          String?
+  imageUrl         String?
+  registrationOpen Boolean             @default(true)
+  capacity         Int?
+  price            Float?              @default(0)
+  featured         Boolean             @default(false)
+  published        Boolean             @default(false)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
 
   // Relações
   registrations EventRegistration[]
@@ -131,16 +173,16 @@ enum EventType {
 
 // Inscrições em Eventos
 model EventRegistration {
-  id          String    @id @default(uuid())
-  eventId     String
-  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          BigInt             @id @default(autoincrement())
+  eventId     BigInt
+  event       Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId      BigInt
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   status      RegistrationStatus @default(PENDING)
-  ticketCount Int       @default(1)
-  totalPaid   Float     @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  ticketCount Int                @default(1)
+  totalPaid   Float              @default(0)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
 
   @@unique([eventId, userId])
   @@map("event_registrations")
@@ -154,17 +196,17 @@ enum RegistrationStatus {
 
 // Sala de Oração - Pedidos
 model PrayerRequest {
-  id          String    @id @default(uuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          BigInt         @id @default(autoincrement())
+  userId      BigInt
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   title       String
   description String
   category    PrayerCategory
-  isAnonymous Boolean   @default(false)
-  isPublic    Boolean   @default(true)
-  answered    Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isAnonymous Boolean        @default(false)
+  isPublic    Boolean        @default(true)
+  answered    Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   @@map("prayer_requests")
 }
@@ -181,21 +223,21 @@ enum PrayerCategory {
 
 // Cursos Online
 model Course {
-  id          String    @id @default(uuid())
+  id          BigInt             @id @default(autoincrement())
   title       String
-  slug        String    @unique
+  slug        String             @unique
   description String
   instructor  String
   thumbnail   String?
   videoUrl    String?
-  duration    Int?      // em minutos
+  duration    Int?               // em minutos
   level       CourseLevel
   category    String
-  price       Float     @default(0)
-  featured    Boolean   @default(false)
-  published   Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  price       Float              @default(0)
+  featured    Boolean            @default(false)
+  published   Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
 
   // Relações
   lessons     Lesson[]
@@ -212,31 +254,31 @@ enum CourseLevel {
 
 // Lições do Curso
 model Lesson {
-  id          String    @id @default(uuid())
-  courseId    String
-  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  id          BigInt   @id @default(autoincrement())
+  courseId    BigInt
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   title       String
   description String?
   videoUrl    String
-  duration    Int       // em minutos
+  duration    Int      // em minutos
   order       Int
-  published   Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("lessons")
 }
 
 // Inscrições em Cursos
 model CourseEnrollment {
-  id          String    @id @default(uuid())
-  courseId    String
-  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  userEmail   String
-  progress    Int       @default(0)
-  completed   Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        BigInt   @id @default(autoincrement())
+  courseId  BigInt
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userEmail String
+  progress  Int      @default(0)
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([courseId, userEmail])
   @@map("course_enrollments")
@@ -244,7 +286,7 @@ model CourseEnrollment {
 
 // Posts do Blog/Notícias
 model BlogPost {
-  id          String    @id @default(uuid())
+  id          BigInt    @id @default(autoincrement())
   title       String
   slug        String    @unique
   excerpt     String?
@@ -261,44 +303,44 @@ model BlogPost {
   updatedAt   DateTime  @updatedAt
 
   // Relações
-  comments    Comment[]
+  comments Comment[]
 
   @@map("blog_posts")
 }
 
 // Comentários (para Mensagens e Blog)
 model Comment {
-  id          String    @id @default(uuid())
-  content     String
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messageId   String?
-  message     Message?  @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  blogPostId  String?
-  blogPost    BlogPost? @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
-  approved    Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         BigInt    @id @default(autoincrement())
+  content    String
+  userId     BigInt
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messageId  BigInt?
+  message    Message?  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  blogPostId BigInt?
+  blogPost   BlogPost? @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  approved   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@map("comments")
 }
 
 // Doações
 model Donation {
-  id          String    @id @default(uuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  amount      Float
-  currency    String    @default("BRL")
-  type        DonationType
-  frequency   DonationFrequency
-  status      DonationStatus
+  id            BigInt            @id @default(autoincrement())
+  userId        BigInt
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount        Float
+  currency      String            @default("BRL")
+  type          DonationType
+  frequency     DonationFrequency
+  status        DonationStatus
   paymentMethod String?
-  transactionId String?  @unique
-  message     String?
-  isAnonymous Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  transactionId String?           @unique
+  message       String?
+  isAnonymous   Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   @@map("donations")
 }
@@ -324,18 +366,18 @@ enum DonationStatus {
   REFUNDED
 }
 
-// Ministérios
+// Ministérios (mantido para compatibilidade)
 model Ministry {
-  id          String    @id @default(uuid())
+  id          BigInt           @id @default(autoincrement())
   name        String
-  slug        String    @unique
+  slug        String           @unique
   description String
   leader      String?
   imageUrl    String?
   category    MinistryCategory
-  active      Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  active      Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   @@map("ministries")
 }
@@ -355,36 +397,36 @@ enum MinistryCategory {
 
 // Membros da Equipe/Líderes
 model TeamMember {
-  id          String    @id @default(uuid())
-  name        String
-  role        String
-  bio         String?
-  photo       String?
-  email       String?
-  phone       String?
-  order       Int       @default(0)
-  active      Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        BigInt   @id @default(autoincrement())
+  name      String
+  role      String
+  bio       String?
+  photo     String?
+  email     String?
+  phone     String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("team_members")
 }
 
 // Configurações do Site
 model SiteSettings {
-  id          String    @id @default(uuid())
-  key         String    @unique
+  id          BigInt   @id @default(autoincrement())
+  key         String   @unique
   value       String
-  type        String    @default("string")
+  type        String   @default("string")
   description String?
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime @updatedAt
 
   @@map("site_settings")
 }
 
 // Transmissões ao Vivo
 model LiveStream {
-  id          String    @id @default(uuid())
+  id          BigInt    @id @default(autoincrement())
   title       String
   description String?
   streamUrl   String

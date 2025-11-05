@@ -140,6 +140,10 @@ export function Header() {
             <Button asChild size="default" className="ml-4">
               <Link href="/donate">Doar</Link>
             </Button>
+
+            <Button asChild size="default" variant="outline" className="ml-2">
+              <Link href="/auth/login">Login</Link>
+            </Button>
           </nav>
 
           {/* Mobile menu button */}
@@ -292,11 +296,19 @@ export function Header() {
                   </Link>
                 </div>
 
-                <Button asChild className="w-full" size="lg">
-                  <Link href="/donate" onClick={() => setIsMobileMenuOpen(false)}>
-                    Doar
-                  </Link>
-                </Button>
+                <div className="space-y-3">
+                  <Button asChild className="w-full" size="lg">
+                    <Link href="/donate" onClick={() => setIsMobileMenuOpen(false)}>
+                      Doar
+                    </Link>
+                  </Button>
+
+                  <Button asChild className="w-full" size="lg" variant="outline">
+                    <Link href="/auth/login" onClick={() => setIsMobileMenuOpen(false)}>
+                      Login
+                    </Link>
+                  </Button>
+                </div>
               </nav>
             </SheetContent>
           </Sheet>

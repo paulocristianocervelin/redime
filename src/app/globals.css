@@ -157,4 +157,13 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Animation delays */
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
 }

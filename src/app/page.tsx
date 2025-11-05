@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -17,14 +18,24 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-black to-gray-900 text-white py-20 md:py-32">
+      <section className="relative bg-gradient-to-b from-black to-gray-900 text-white py-8 md:py-12">
         <div className="absolute inset-0 bg-[url('/prayer-room-bg.jpg')] bg-cover bg-center opacity-20" />
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <Badge variant="outline" className="border-primary text-primary bg-primary/10">
-              Missão Redime Chapecó
-            </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            {/* Logo */}
+            <div className="flex justify-center mb-6">
+              <div className="relative w-96 h-40 md:w-[600px] md:h-60 lg:w-[800px] lg:h-80">
+                <Image
+                  src="/Imagens/logo_Prancheta-w.png"
+                  alt="Missão Redime Chapecó"
+                  fill
+                  className="object-contain brightness-0 invert"
+                  priority
+                />
+              </div>
+            </div>
+
+            <h1 className="text-lg md:text-2xl lg:text-3xl font-bold tracking-tight">
               Amor, Verdade,
               <br />
               <span className="text-primary">Mesa & Discipulado</span>
