@@ -18,13 +18,9 @@ export default async function DashboardPage() {
   const stats = await Promise.all([
     prisma.user.count({ where: { active: true } }),
     prisma.department.count({ where: { active: true } }),
-    prisma.user.count({
-      where: {
-        active: true,
-        memberProfile: {
-          departmentId: { not: null },
-        },
-      },
+    prisma.memberDepartment.findMany({
+      distinct: ['memberProfileId'],
+      select: { memberProfileId: true },
     }),
     prisma.user.count({
       where: {
@@ -34,7 +30,8 @@ export default async function DashboardPage() {
     }),
   ]);
 
-  const [totalMembers, totalDepartments, membersInDepartments, totalLeaders] = stats;
+  const [totalMembers, totalDepartments, membersWithDepartments, totalLeaders] = stats;
+  const membersInDepartments = membersWithDepartments.length;
 
   // Departamentos recentes
   const recentDepartments = await prisma.department.findMany({
@@ -67,9 +64,13 @@ export default async function DashboardPage() {
       createdAt: true,
       memberProfile: {
         select: {
-          department: {
-            select: {
-              name: true,
+          departments: {
+            include: {
+              department: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
         },
@@ -244,7 +245,9 @@ export default async function DashboardPage() {
                   <div className="flex-1">
                     <p className="font-semibold text-gray-900 group-hover:text-blue-700">{member.name}</p>
                     <p className="text-sm text-gray-500 mt-1">
-                      {member.memberProfile?.department?.name || 'Sem departamento'}
+                      {member.memberProfile?.departments && member.memberProfile.departments.length > 0
+                        ? member.memberProfile.departments.map(d => d.department.name).join(', ')
+                        : 'Sem departamento'}
                     </p>
                   </div>
                   <div className="text-right ml-4">

@@ -98,7 +98,7 @@ export async function PUT(
       city,
       state,
       zipCode,
-      departmentId,
+      departmentIds,
       birthDate,
     } = body;
 
@@ -142,7 +142,6 @@ export async function PUT(
     if (city !== undefined) profileData.city = city;
     if (state !== undefined) profileData.state = state;
     if (zipCode !== undefined) profileData.zipCode = zipCode;
-    if (departmentId !== undefined) profileData.departmentId = departmentId ? BigInt(departmentId) : null;
     if (birthDate !== undefined) profileData.birthDate = birthDate ? new Date(birthDate) : null;
 
     // Atualizar usuário e perfil
@@ -157,11 +156,33 @@ export async function PUT(
       include: {
         memberProfile: {
           include: {
-            department: true,
+            departments: {
+              include: {
+                department: true,
+              },
+            },
           },
         },
       },
     });
+
+    // Atualizar departamentos se fornecidos
+    if (departmentIds !== undefined && Array.isArray(departmentIds) && existingMember.memberProfile) {
+      // Remover todos os departamentos atuais
+      await prisma.memberDepartment.deleteMany({
+        where: { memberProfileId: existingMember.memberProfile.id },
+      });
+
+      // Adicionar novos departamentos
+      if (departmentIds.length > 0) {
+        await prisma.memberDepartment.createMany({
+          data: departmentIds.map((deptId: string) => ({
+            memberProfileId: existingMember.memberProfile!.id,
+            departmentId: BigInt(deptId),
+          })),
+        });
+      }
+    }
 
     return NextResponse.json({
       message: 'Membro atualizado com sucesso',

@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import InputMask from 'react-input-mask';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -14,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -33,6 +33,29 @@ import { Plus, Edit, Trash2, Loader2, Search, Eye } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+// Funções de formatação de input
+const formatCPF = (value: string): string => {
+  const numbers = value.replace(/\D/g, '').slice(0, 11);
+  if (numbers.length <= 3) return numbers;
+  if (numbers.length <= 6) return `${numbers.slice(0, 3)}.${numbers.slice(3)}`;
+  if (numbers.length <= 9) return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6)}`;
+  return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6, 9)}-${numbers.slice(9)}`;
+};
+
+const formatPhone = (value: string): string => {
+  const numbers = value.replace(/\D/g, '').slice(0, 11);
+  if (numbers.length <= 2) return numbers;
+  if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+  if (numbers.length <= 11) return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
+  return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+};
+
+const formatCEP = (value: string): string => {
+  const numbers = value.replace(/\D/g, '').slice(0, 8);
+  if (numbers.length <= 5) return numbers;
+  return `${numbers.slice(0, 5)}-${numbers.slice(5)}`;
+};
+
 interface Member {
   id: string;
   name: string;
@@ -49,15 +72,18 @@ interface Member {
     city: string | null;
     state: string | null;
     zipCode: string | null;
-    department: {
-      id: string;
-      name: string;
-    } | null;
+    departments: {
+      department: {
+        id: string;
+        name: string;
+      };
+    }[];
   } | null;
 }
 
 export default function MembersPage() {
   const router = useRouter();
+  const addressInputRef = useRef<HTMLInputElement>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [departments, setDepartments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,6 +91,7 @@ export default function MembersPage() {
   const [editingMember, setEditingMember] = useState<Member | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loadingCep, setLoadingCep] = useState(false);
+  const [cepError, setCepError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     cpf: '',
@@ -77,7 +104,7 @@ export default function MembersPage() {
     city: '',
     state: '',
     zipCode: '',
-    departmentId: '',
+    departmentIds: [] as string[],
     role: 'MEMBER',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -116,24 +143,31 @@ export default function MembersPage() {
       return;
     }
 
+    setCepError('');
     setLoadingCep(true);
     try {
       const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       const data = await response.json();
 
       if (!data.erro) {
-        setFormData({
-          ...formData,
+        setFormData((prev) => ({
+          ...prev,
           address: data.logradouro || '',
           city: data.localidade || '',
           state: data.uf || '',
-        });
+        }));
+        setCepError('');
+
+        // Após atualizar os dados, foca no campo de endereço
+        setTimeout(() => {
+          addressInputRef.current?.focus();
+        }, 100);
       } else {
-        alert('CEP não encontrado');
+        setCepError('CEP não encontrado');
       }
     } catch (error) {
       console.error('Error fetching CEP:', error);
-      alert('Erro ao buscar CEP');
+      setCepError('Erro ao buscar CEP');
     } finally {
       setLoadingCep(false);
     }
@@ -142,6 +176,9 @@ export default function MembersPage() {
   const handleOpenDialog = (member?: Member) => {
     if (member) {
       setEditingMember(member);
+      const memberDepartmentIds = member.memberProfile?.departments?.map(
+        (d) => d.department.id.toString()
+      ) || [];
       setFormData({
         name: member.name,
         cpf: member.cpf,
@@ -154,7 +191,7 @@ export default function MembersPage() {
         city: member.memberProfile?.city || '',
         state: member.memberProfile?.state || '',
         zipCode: member.memberProfile?.zipCode || '',
-        departmentId: member.memberProfile?.department?.id?.toString() || 'null',
+        departmentIds: memberDepartmentIds,
         role: member.role,
       });
     } else {
@@ -171,7 +208,7 @@ export default function MembersPage() {
         city: '',
         state: '',
         zipCode: '',
-        departmentId: 'null',
+        departmentIds: [],
         role: 'MEMBER',
       });
     }
@@ -269,7 +306,7 @@ export default function MembersPage() {
             Gerencie os membros da igreja
           </p>
         </div>
-        <Button onClick={() => handleOpenDialog()} className="bg-primary">
+        <Button onClick={() => handleOpenDialog()} className="gradient-bg-primary hover-lift shadow-modern text-white border-0">
           <Plus className="h-4 w-4 mr-2" />
           Novo Membro
         </Button>
@@ -309,7 +346,9 @@ export default function MembersPage() {
                   <TableCell>{member.cpf}</TableCell>
                   <TableCell>{member.email || '-'}</TableCell>
                   <TableCell>
-                    {member.memberProfile?.department?.name || '-'}
+                    {member.memberProfile?.departments && member.memberProfile.departments.length > 0
+                      ? member.memberProfile.departments.map(d => d.department.name).join(', ')
+                      : '-'}
                   </TableCell>
                   <TableCell>
                     <span
@@ -376,6 +415,7 @@ export default function MembersPage() {
           if (!open) {
             // Reset form quando fechar
             setEditingMember(null);
+            setCepError('');
             setFormData({
               name: '',
               cpf: '',
@@ -383,10 +423,12 @@ export default function MembersPage() {
               password: '',
               phone: '',
               address: '',
+              number: '',
+              complement: '',
               city: '',
               state: '',
               zipCode: '',
-              departmentId: 'null',
+              departmentIds: [],
               role: 'MEMBER',
             });
           }
@@ -422,42 +464,28 @@ export default function MembersPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="cpf">CPF *</Label>
-                  <InputMask
-                    mask="999.999.999-99"
+                  <Input
+                    id="cpf"
                     value={formData.cpf}
                     onChange={(e) =>
-                      setFormData({ ...formData, cpf: e.target.value })
+                      setFormData({ ...formData, cpf: formatCPF(e.target.value) })
                     }
                     disabled={!!editingMember}
-                  >
-                    {((inputProps: any) => (
-                      <Input
-                        {...inputProps}
-                        id="cpf"
-                        required
-                        placeholder="000.000.000-00"
-                      />
-                    )) as any}
-                  </InputMask>
+                    required
+                    placeholder="000.000.000-00"
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="phone">Telefone</Label>
-                  <InputMask
-                    mask="(99) 99999-9999"
+                  <Input
+                    id="phone"
                     value={formData.phone}
                     onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
+                      setFormData({ ...formData, phone: formatPhone(e.target.value) })
                     }
-                  >
-                    {((inputProps: any) => (
-                      <Input
-                        {...inputProps}
-                        id="phone"
-                        placeholder="(00) 00000-0000"
-                      />
-                    )) as any}
-                  </InputMask>
+                    placeholder="(00) 00000-0000"
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -491,31 +519,30 @@ export default function MembersPage() {
                 <div className="space-y-2">
                   <Label htmlFor="zipCode">CEP</Label>
                   <div className="relative">
-                    <InputMask
-                      mask="99999-999"
+                    <Input
+                      id="zipCode"
                       value={formData.zipCode}
-                      onChange={(e) =>
-                        setFormData({ ...formData, zipCode: e.target.value })
-                      }
+                      onChange={(e) => {
+                        setFormData({ ...formData, zipCode: formatCEP(e.target.value) });
+                        setCepError('');
+                      }}
                       onBlur={handleCepBlur}
-                    >
-                      {((inputProps: any) => (
-                        <Input
-                          {...inputProps}
-                          id="zipCode"
-                          placeholder="00000-000"
-                        />
-                      )) as any}
-                    </InputMask>
+                      placeholder="00000-000"
+                      className={cepError ? 'border-red-500' : ''}
+                    />
                     {loadingCep && (
                       <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
                     )}
                   </div>
+                  {cepError && (
+                    <p className="text-sm text-red-500">{cepError}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2 col-span-2">
                   <Label htmlFor="address">Endereço *</Label>
                   <Input
+                    ref={addressInputRef}
                     id="address"
                     value={formData.address}
                     onChange={(e) =>
@@ -577,29 +604,43 @@ export default function MembersPage() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="department">Departamento</Label>
-                  <Select
-                    value={formData.departmentId}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, departmentId: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione (opcional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="null">Sem departamento</SelectItem>
-                      {departments.map((dept) => (
-                        <SelectItem
-                          key={dept.id.toString()}
-                          value={dept.id.toString()}
-                        >
-                          {dept.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="space-y-2 col-span-2">
+                  <Label>Departamentos (opcional)</Label>
+                  <div className="border rounded-md p-4 max-h-[200px] overflow-y-auto space-y-3">
+                    {departments.length === 0 ? (
+                      <p className="text-sm text-gray-500">Nenhum departamento cadastrado</p>
+                    ) : (
+                      departments.map((dept) => (
+                        <div key={dept.id.toString()} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`dept-${dept.id}`}
+                            checked={formData.departmentIds.includes(dept.id.toString())}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setFormData({
+                                  ...formData,
+                                  departmentIds: [...formData.departmentIds, dept.id.toString()],
+                                });
+                              } else {
+                                setFormData({
+                                  ...formData,
+                                  departmentIds: formData.departmentIds.filter(
+                                    (id) => id !== dept.id.toString()
+                                  ),
+                                });
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`dept-${dept.id}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {dept.name}
+                          </label>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -632,7 +673,12 @@ export default function MembersPage() {
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={submitting} className="bg-primary">
+              <Button
+                type="submit"
+                variant="outline"
+                disabled={submitting}
+                className="hover:bg-primary hover:text-white transition-colors"
+              >
                 {submitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

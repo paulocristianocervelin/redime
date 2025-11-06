@@ -45,7 +45,11 @@ export async function GET(request: NextRequest) {
         createdAt: true,
         memberProfile: {
           include: {
-            department: true,
+            departments: {
+              include: {
+                department: true,
+              },
+            },
           },
         },
       },
@@ -96,7 +100,7 @@ export async function POST(request: NextRequest) {
       city,
       state,
       zipCode,
-      departmentId,
+      departmentIds,
       birthDate,
     } = body;
 
@@ -154,15 +158,27 @@ export async function POST(request: NextRequest) {
             city: city || null,
             state: state || null,
             zipCode: zipCode || null,
-            departmentId: departmentId ? BigInt(departmentId) : null,
             birthDate: birthDate ? new Date(birthDate) : null,
+            departments: {
+              create: departmentIds && Array.isArray(departmentIds)
+                ? departmentIds.map((deptId: string) => ({
+                    department: {
+                      connect: { id: BigInt(deptId) },
+                    },
+                  }))
+                : [],
+            },
           },
         },
       },
       include: {
         memberProfile: {
           include: {
-            department: true,
+            departments: {
+              include: {
+                department: true,
+              },
+            },
           },
         },
       },

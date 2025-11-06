@@ -213,7 +213,7 @@ export default function DepartmentsPage() {
             Gerencie os departamentos e ministérios da igreja
           </p>
         </div>
-        <Button onClick={() => handleOpenDialog()} className="bg-primary">
+        <Button onClick={() => handleOpenDialog()} className="gradient-bg-primary hover-lift shadow-modern text-white border-0">
           <Plus className="h-4 w-4 mr-2" />
           Novo Departamento
         </Button>
@@ -418,7 +418,12 @@ export default function DepartmentsPage() {
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={submitting} className="bg-primary">
+              <Button
+                type="submit"
+                variant="outline"
+                disabled={submitting}
+                className="hover:bg-primary hover:text-white transition-colors"
+              >
                 {submitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

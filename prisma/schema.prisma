@@ -43,28 +43,44 @@ enum UserRole {
 
 // Perfil de Membro
 model MemberProfile {
-  id              BigInt      @id @default(autoincrement())
-  userId          BigInt      @unique
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  phone           String?     // Não obrigatório
-  address         String      // Obrigatório
-  number          String?     // Número do endereço
-  complement      String?     // Complemento do endereço
+  id              BigInt                @id @default(autoincrement())
+  userId          BigInt                @unique
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone           String?               // Não obrigatório
+  address         String                // Obrigatório
+  number          String?               // Número do endereço
+  complement      String?               // Complemento do endereço
   city            String?
   state           String?
   zipCode         String?
   birthDate       DateTime?
   baptismDate     DateTime?
   membershipDate  DateTime?
-  departmentId    BigInt?     // Departamento onde serve
-  department      Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-  interests       String[]    // Áreas de interesse
+  interests       String[]              // Áreas de interesse
   photo           String?
   bio             String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  // Relação many-to-many com departamentos
+  departments MemberDepartment[]
 
   @@map("member_profiles")
+}
+
+// Tabela intermediária para relação many-to-many entre membros e departamentos
+model MemberDepartment {
+  id              BigInt        @id @default(autoincrement())
+  memberProfileId BigInt
+  memberProfile   MemberProfile @relation(fields: [memberProfileId], references: [id], onDelete: Cascade)
+  departmentId    BigInt
+  department      Department    @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  joinedAt        DateTime      @default(now())
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([memberProfileId, departmentId])
+  @@map("member_departments")
 }
 
 // Departamentos/Ministérios
@@ -81,8 +97,8 @@ model Department {
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 
-  // Relações
-  members MemberProfile[]
+  // Relação many-to-many com membros
+  members MemberDepartment[]
 
   @@map("departments")
 }

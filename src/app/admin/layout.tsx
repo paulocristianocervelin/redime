@@ -37,7 +37,7 @@ export default async function AdminLayout({
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen gradient-bg-blue-soft">
       <AdminSidebar user={userForSidebar} />
       <main className="flex-1 overflow-y-auto">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 pt-20 lg:pt-8">
