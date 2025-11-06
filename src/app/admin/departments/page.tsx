@@ -21,8 +21,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, Edit, Trash2, Users, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, Loader2, Eye } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface Department {
   id: string;
@@ -112,7 +113,7 @@ export default function DepartmentsPage() {
         name: dept.name,
         description: dept.description,
         category: dept.category,
-        leaderId: dept.leader?.id?.toString() || '',
+        leaderId: dept.leader?.id?.toString() || 'null',
       });
     } else {
       setEditingDept(null);
@@ -120,7 +121,7 @@ export default function DepartmentsPage() {
         name: '',
         description: '',
         category: '',
-        leaderId: '',
+        leaderId: 'null',
       });
     }
     setDialogOpen(true);
@@ -130,6 +131,13 @@ export default function DepartmentsPage() {
     e.preventDefault();
     setSubmitting(true);
 
+    // Validação manual da categoria
+    if (!formData.category) {
+      alert('Por favor, selecione uma categoria');
+      setSubmitting(false);
+      return;
+    }
+
     try {
       const url = editingDept
         ? `/api/departments/${editingDept.id}`
@@ -137,10 +145,16 @@ export default function DepartmentsPage() {
 
       const method = editingDept ? 'PUT' : 'POST';
 
+      // Converter "null" string para null real
+      const submitData = {
+        ...formData,
+        leaderId: formData.leaderId === 'null' || formData.leaderId === '' ? null : formData.leaderId,
+      };
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       });
 
       if (!response.ok) {
@@ -213,10 +227,20 @@ export default function DepartmentsPage() {
               <CardTitle className="flex items-center justify-between">
                 <span className="text-lg">{dept.name}</span>
                 <div className="flex gap-2">
+                  <Link href={`/admin/departments/${dept.id}`}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      title="Visualizar"
+                    >
+                      <Eye className="h-4 w-4 text-blue-600" />
+                    </Button>
+                  </Link>
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => handleOpenDialog(dept)}
+                    title="Editar"
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -224,6 +248,7 @@ export default function DepartmentsPage() {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleDelete(dept.id)}
+                    title="Deletar"
                   >
                     <Trash2 className="h-4 w-4 text-red-600" />
                   </Button>
@@ -281,8 +306,26 @@ export default function DepartmentsPage() {
       )}
 
       {/* Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (!open) {
+            // Reset form quando fechar
+            setEditingDept(null);
+            setFormData({
+              name: '',
+              description: '',
+              category: '',
+              leaderId: 'null',
+            });
+          }
+        }}
+      >
+        <DialogContent
+          key={editingDept?.id || 'new'}
+          className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto"
+        >
           <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>
@@ -326,7 +369,6 @@ export default function DepartmentsPage() {
                   onValueChange={(value) =>
                     setFormData({ ...formData, category: value })
                   }
-                  required
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione uma categoria" />
@@ -353,7 +395,7 @@ export default function DepartmentsPage() {
                     <SelectValue placeholder="Selecione um líder (opcional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Sem líder</SelectItem>
+                    <SelectItem value="null">Sem líder</SelectItem>
                     {leaders.map((leader) => (
                       <SelectItem
                         key={leader.id.toString()}

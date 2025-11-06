@@ -93,6 +93,8 @@ export async function PUT(
       active,
       phone,
       address,
+      number,
+      complement,
       city,
       state,
       zipCode,
@@ -135,6 +137,8 @@ export async function PUT(
     const profileData: any = {};
     if (phone !== undefined) profileData.phone = phone;
     if (address !== undefined) profileData.address = address;
+    if (number !== undefined) profileData.number = number;
+    if (complement !== undefined) profileData.complement = complement;
     if (city !== undefined) profileData.city = city;
     if (state !== undefined) profileData.state = state;
     if (zipCode !== undefined) profileData.zipCode = zipCode;

@@ -91,6 +91,8 @@ export async function POST(request: NextRequest) {
       password,
       phone,
       address,
+      number,
+      complement,
       city,
       state,
       zipCode,
@@ -147,6 +149,8 @@ export async function POST(request: NextRequest) {
           create: {
             phone: phone || null,
             address,
+            number: number || null,
+            complement: complement || null,
             city: city || null,
             state: state || null,
             zipCode: zipCode || null,

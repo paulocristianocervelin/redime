@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import InputMask from 'react-input-mask';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -28,8 +29,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Plus, Edit, Trash2, Loader2, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Loader2, Search, Eye } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface Member {
   id: string;
@@ -42,6 +44,8 @@ interface Member {
   memberProfile?: {
     phone: string | null;
     address: string;
+    number: string | null;
+    complement: string | null;
     city: string | null;
     state: string | null;
     zipCode: string | null;
@@ -60,6 +64,7 @@ export default function MembersPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loadingCep, setLoadingCep] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     cpf: '',
@@ -67,6 +72,8 @@ export default function MembersPage() {
     password: '',
     phone: '',
     address: '',
+    number: '',
+    complement: '',
     city: '',
     state: '',
     zipCode: '',
@@ -102,6 +109,36 @@ export default function MembersPage() {
     }
   };
 
+  const handleCepBlur = async () => {
+    const cep = formData.zipCode.replace(/\D/g, '');
+
+    if (cep.length !== 8) {
+      return;
+    }
+
+    setLoadingCep(true);
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+
+      if (!data.erro) {
+        setFormData({
+          ...formData,
+          address: data.logradouro || '',
+          city: data.localidade || '',
+          state: data.uf || '',
+        });
+      } else {
+        alert('CEP não encontrado');
+      }
+    } catch (error) {
+      console.error('Error fetching CEP:', error);
+      alert('Erro ao buscar CEP');
+    } finally {
+      setLoadingCep(false);
+    }
+  };
+
   const handleOpenDialog = (member?: Member) => {
     if (member) {
       setEditingMember(member);
@@ -112,10 +149,12 @@ export default function MembersPage() {
         password: '',
         phone: member.memberProfile?.phone || '',
         address: member.memberProfile?.address || '',
+        number: member.memberProfile?.number || '',
+        complement: member.memberProfile?.complement || '',
         city: member.memberProfile?.city || '',
         state: member.memberProfile?.state || '',
         zipCode: member.memberProfile?.zipCode || '',
-        departmentId: member.memberProfile?.department?.id?.toString() || '',
+        departmentId: member.memberProfile?.department?.id?.toString() || 'null',
         role: member.role,
       });
     } else {
@@ -127,10 +166,12 @@ export default function MembersPage() {
         password: '',
         phone: '',
         address: '',
+        number: '',
+        complement: '',
         city: '',
         state: '',
         zipCode: '',
-        departmentId: '',
+        departmentId: 'null',
         role: 'MEMBER',
       });
     }
@@ -152,6 +193,11 @@ export default function MembersPage() {
       const payload = { ...formData };
       if (editingMember && !payload.password) {
         delete (payload as any).password;
+      }
+
+      // Converter "null" string para null real no departmentId
+      if (payload.departmentId === 'null' || payload.departmentId === '') {
+        (payload as any).departmentId = null;
       }
 
       const response = await fetch(url, {
@@ -280,10 +326,20 @@ export default function MembersPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
+                      <Link href={`/admin/members/${member.id}`}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Visualizar"
+                        >
+                          <Eye className="h-4 w-4 text-blue-600" />
+                        </Button>
+                      </Link>
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleOpenDialog(member)}
+                        title="Editar"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -291,6 +347,7 @@ export default function MembersPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(member.id)}
+                        title="Deletar"
                       >
                         <Trash2 className="h-4 w-4 text-red-600" />
                       </Button>
@@ -312,8 +369,33 @@ export default function MembersPage() {
       </Card>
 
       {/* Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (!open) {
+            // Reset form quando fechar
+            setEditingMember(null);
+            setFormData({
+              name: '',
+              cpf: '',
+              email: '',
+              password: '',
+              phone: '',
+              address: '',
+              city: '',
+              state: '',
+              zipCode: '',
+              departmentId: 'null',
+              role: 'MEMBER',
+            });
+          }
+        }}
+      >
+        <DialogContent
+          key={editingMember?.id || 'new'}
+          className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto"
+        >
           <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>
@@ -340,26 +422,42 @@ export default function MembersPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="cpf">CPF *</Label>
-                  <Input
-                    id="cpf"
+                  <InputMask
+                    mask="999.999.999-99"
                     value={formData.cpf}
                     onChange={(e) =>
                       setFormData({ ...formData, cpf: e.target.value })
                     }
-                    required
                     disabled={!!editingMember}
-                  />
+                  >
+                    {((inputProps: any) => (
+                      <Input
+                        {...inputProps}
+                        id="cpf"
+                        required
+                        placeholder="000.000.000-00"
+                      />
+                    )) as any}
+                  </InputMask>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="phone">Telefone</Label>
-                  <Input
-                    id="phone"
+                  <InputMask
+                    mask="(99) 99999-9999"
                     value={formData.phone}
                     onChange={(e) =>
                       setFormData({ ...formData, phone: e.target.value })
                     }
-                  />
+                  >
+                    {((inputProps: any) => (
+                      <Input
+                        {...inputProps}
+                        id="phone"
+                        placeholder="(00) 00000-0000"
+                      />
+                    )) as any}
+                  </InputMask>
                 </div>
 
                 <div className="space-y-2">
@@ -390,6 +488,31 @@ export default function MembersPage() {
                   />
                 </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="zipCode">CEP</Label>
+                  <div className="relative">
+                    <InputMask
+                      mask="99999-999"
+                      value={formData.zipCode}
+                      onChange={(e) =>
+                        setFormData({ ...formData, zipCode: e.target.value })
+                      }
+                      onBlur={handleCepBlur}
+                    >
+                      {((inputProps: any) => (
+                        <Input
+                          {...inputProps}
+                          id="zipCode"
+                          placeholder="00000-000"
+                        />
+                      )) as any}
+                    </InputMask>
+                    {loadingCep && (
+                      <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
+                    )}
+                  </div>
+                </div>
+
                 <div className="space-y-2 col-span-2">
                   <Label htmlFor="address">Endereço *</Label>
                   <Input
@@ -399,6 +522,32 @@ export default function MembersPage() {
                       setFormData({ ...formData, address: e.target.value })
                     }
                     required
+                    disabled={loadingCep}
+                    placeholder="Rua, Avenida, etc"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="number">Número</Label>
+                  <Input
+                    id="number"
+                    value={formData.number}
+                    onChange={(e) =>
+                      setFormData({ ...formData, number: e.target.value })
+                    }
+                    placeholder="Ex: 123"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="complement">Complemento</Label>
+                  <Input
+                    id="complement"
+                    value={formData.complement}
+                    onChange={(e) =>
+                      setFormData({ ...formData, complement: e.target.value })
+                    }
+                    placeholder="Apto, Bloco, etc"
                   />
                 </div>
 
@@ -410,6 +559,7 @@ export default function MembersPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, city: e.target.value })
                     }
+                    disabled={loadingCep}
                   />
                 </div>
 
@@ -423,17 +573,7 @@ export default function MembersPage() {
                     }
                     maxLength={2}
                     placeholder="SC"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="zipCode">CEP</Label>
-                  <Input
-                    id="zipCode"
-                    value={formData.zipCode}
-                    onChange={(e) =>
-                      setFormData({ ...formData, zipCode: e.target.value })
-                    }
+                    disabled={loadingCep}
                   />
                 </div>
 
@@ -449,7 +589,7 @@ export default function MembersPage() {
                       <SelectValue placeholder="Selecione (opcional)" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Sem departamento</SelectItem>
+                      <SelectItem value="null">Sem departamento</SelectItem>
                       {departments.map((dept) => (
                         <SelectItem
                           key={dept.id.toString()}

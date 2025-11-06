@@ -48,6 +48,8 @@ model MemberProfile {
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   phone           String?     // Não obrigatório
   address         String      // Obrigatório
+  number          String?     // Número do endereço
+  complement      String?     // Complemento do endereço
   city            String?
   state           String?
   zipCode         String?

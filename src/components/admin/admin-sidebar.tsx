@@ -48,12 +48,13 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       icon: Users,
       show: true, // Admin e Leader
     },
-    {
-      name: 'Configurações',
-      href: '/admin/settings',
-      icon: Settings,
-      show: isAdmin, // Apenas admin
-    },
+    // Configurações - TODO: Implementar futuramente
+    // {
+    //   name: 'Configurações',
+    //   href: '/admin/settings',
+    //   icon: Settings,
+    //   show: isAdmin,
+    // },
   ].filter((item) => item.show);
 
   const handleLogout = async () => {
@@ -115,12 +116,12 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
     <>
       {/* Mobile Toggle */}
       <Button
-        variant="ghost"
+        variant="outline"
         size="icon"
-        className="fixed top-4 left-4 z-50 lg:hidden"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white shadow-md hover:shadow-lg border-gray-200"
         onClick={() => setMobileOpen(!mobileOpen)}
       >
-        {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </Button>
 
       {/* Mobile Sidebar */}
