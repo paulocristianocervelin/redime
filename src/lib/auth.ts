@@ -18,7 +18,7 @@ export async function createToken(payload: JWTPayload): Promise<string> {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('7d') // Token expira em 7 dias
+    .setExpirationTime('8h') // Token expira em 8 horas
     .sign(secret);
 }
 
@@ -86,7 +86,7 @@ export async function login(email: string, password: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60 * 8, // 8 horas
     path: '/',
   });
 
