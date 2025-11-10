@@ -11,6 +11,7 @@ export interface JWTPayload {
   email?: string;
   role: string;
   name: string;
+  [key: string]: unknown; // Index signature para compatibilidade com jose
 }
 
 // Criar token JWT
@@ -26,7 +27,12 @@ export async function createToken(payload: JWTPayload): Promise<string> {
 export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
     const { payload } = await jwtVerify(token, secret);
-    return payload as JWTPayload;
+    return {
+      userId: payload.userId as string,
+      email: payload.email as string | undefined,
+      role: payload.role as string,
+      name: payload.name as string,
+    };
   } catch (error) {
     return null;
   }
@@ -51,7 +57,11 @@ export async function login(email: string, password: string) {
     include: {
       memberProfile: {
         include: {
-          department: true,
+          departments: {
+            include: {
+              department: true,
+            },
+          },
         },
       },
     },
@@ -96,7 +106,7 @@ export async function login(email: string, password: string) {
       email: user.email,
       name: user.name,
       role: user.role,
-      memberProfile: user.memberProfile,
+      ...(user.memberProfile && { memberProfile: user.memberProfile }),
     },
     token,
   };
