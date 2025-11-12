@@ -31,12 +31,16 @@ export async function GET(
         },
         members: {
           include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                cpf: true,
+            memberProfile: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    cpf: true,
+                  },
+                },
               },
             },
           },

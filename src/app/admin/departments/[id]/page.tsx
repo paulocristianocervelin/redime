@@ -34,17 +34,20 @@ interface Department {
   } | null;
   members: {
     id: string;
-    userId: string;
-    phone: string | null;
-    address: string;
-    city: string | null;
-    state: string | null;
-    user: {
+    memberProfile: {
       id: string;
-      name: string;
-      email: string | null;
-      cpf: string;
-      role: string;
+      userId: string;
+      phone: string | null;
+      address: string;
+      city: string | null;
+      state: string | null;
+      user: {
+        id: string;
+        name: string;
+        email: string | null;
+        cpf: string;
+        role: string;
+      };
     };
   }[];
 }
@@ -241,26 +244,26 @@ export default function DepartmentDetailPage() {
                     <div className="flex items-center gap-3">
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900 group-hover:text-green-700">
-                          {member.user.name}
+                          {member.memberProfile.user.name}
                         </h4>
                         <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
-                          {member.user.email && (
+                          {member.memberProfile.user.email && (
                             <div className="flex items-center gap-1">
                               <Mail className="h-3 w-3" />
-                              {member.user.email}
+                              {member.memberProfile.user.email}
                             </div>
                           )}
-                          {member.phone && (
+                          {member.memberProfile.phone && (
                             <div className="flex items-center gap-1">
                               <Phone className="h-3 w-3" />
-                              {member.phone}
+                              {member.memberProfile.phone}
                             </div>
                           )}
                         </div>
-                        {member.city && member.state && (
+                        {member.memberProfile.city && member.memberProfile.state && (
                           <div className="flex items-center gap-1 mt-1 text-sm text-gray-500">
                             <MapPin className="h-3 w-3" />
-                            {member.city}, {member.state}
+                            {member.memberProfile.city}, {member.memberProfile.state}
                           </div>
                         )}
                       </div>
@@ -270,14 +273,14 @@ export default function DepartmentDetailPage() {
                   <div className="flex items-center gap-3">
                     <Badge
                       variant={
-                        member.user.role === 'ADMIN'
+                        member.memberProfile.user.role === 'ADMIN'
                           ? 'destructive'
-                          : member.user.role === 'LEADER'
+                          : member.memberProfile.user.role === 'LEADER'
                           ? 'default'
                           : 'secondary'
                       }
                     >
-                      {member.user.role}
+                      {member.memberProfile.user.role}
                     </Badge>
                     <Link href={`/admin/members`}>
                       <Button variant="ghost" size="sm">

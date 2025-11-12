@@ -12,24 +12,24 @@ datasource db {
 
 // Modelo de Usuários
 model User {
-  id            BigInt    @id @default(autoincrement())
-  email         String?   @unique  // Opcional para membros básicos
+  id            BigInt   @id @default(autoincrement())
+  email         String?  @unique // Opcional para membros básicos
   name          String
-  cpf           String    @unique  // CPF obrigatório
-  password      String?   // Opcional para membros sem acesso ao sistema
-  role          UserRole  @default(MEMBER)
-  emailVerified Boolean   @default(false)
-  active        Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  cpf           String   @unique // CPF obrigatório
+  password      String? // Opcional para membros sem acesso ao sistema
+  role          UserRole @default(MEMBER)
+  emailVerified Boolean  @default(false)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relações
-  memberProfile        MemberProfile?
-  donations            Donation[]
-  registrations        EventRegistration[]
-  prayers              PrayerRequest[]
-  comments             Comment[]
-  leaderOfDepartments  Department[]       @relation("DepartmentLeader")
+  memberProfile       MemberProfile?
+  donations           Donation[]
+  registrations       EventRegistration[]
+  prayers             PrayerRequest[]
+  comments            Comment[]
+  leaderOfDepartments Department[]        @relation("DepartmentLeader")
 
   @@map("users")
 }
@@ -43,24 +43,24 @@ enum UserRole {
 
 // Perfil de Membro
 model MemberProfile {
-  id              BigInt                @id @default(autoincrement())
-  userId          BigInt                @unique
-  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  phone           String?               // Não obrigatório
-  address         String                // Obrigatório
-  number          String?               // Número do endereço
-  complement      String?               // Complemento do endereço
-  city            String?
-  state           String?
-  zipCode         String?
-  birthDate       DateTime?
-  baptismDate     DateTime?
-  membershipDate  DateTime?
-  interests       String[]              // Áreas de interesse
-  photo           String?
-  bio             String?
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @updatedAt
+  id             BigInt    @id @default(autoincrement())
+  userId         BigInt    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone          String? // Não obrigatório
+  address        String // Obrigatório
+  number         String? // Número do endereço
+  complement     String? // Complemento do endereço
+  city           String?
+  state          String?
+  zipCode        String?
+  birthDate      DateTime?
+  baptismDate    DateTime?
+  membershipDate DateTime?
+  interests      String[] // Áreas de interesse
+  photo          String?
+  bio            String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   // Relação many-to-many com departamentos
   departments MemberDepartment[]
@@ -89,7 +89,7 @@ model Department {
   name        String
   slug        String             @unique
   description String
-  leaderId    BigInt?            // Líder do departamento
+  leaderId    BigInt? // Líder do departamento
   leader      User?              @relation("DepartmentLeader", fields: [leaderId], references: [id], onDelete: SetNull)
   imageUrl    String?
   category    DepartmentCategory
@@ -156,9 +156,9 @@ enum MessageCategory {
 
 // Eventos
 model Event {
-  id               BigInt              @id @default(autoincrement())
+  id               BigInt    @id @default(autoincrement())
   title            String
-  slug             String              @unique
+  slug             String    @unique
   description      String
   eventType        EventType
   startDate        DateTime
@@ -166,13 +166,13 @@ model Event {
   location         String?
   address          String?
   imageUrl         String?
-  registrationOpen Boolean             @default(true)
+  registrationOpen Boolean   @default(true)
   capacity         Int?
-  price            Float?              @default(0)
-  featured         Boolean             @default(false)
-  published        Boolean             @default(false)
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
+  price            Float?    @default(0)
+  featured         Boolean   @default(false)
+  published        Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   // Relações
   registrations EventRegistration[]
@@ -241,21 +241,21 @@ enum PrayerCategory {
 
 // Cursos Online
 model Course {
-  id          BigInt             @id @default(autoincrement())
+  id          BigInt      @id @default(autoincrement())
   title       String
-  slug        String             @unique
+  slug        String      @unique
   description String
   instructor  String
   thumbnail   String?
   videoUrl    String?
-  duration    Int?               // em minutos
+  duration    Int? // em minutos
   level       CourseLevel
   category    String
-  price       Float              @default(0)
-  featured    Boolean            @default(false)
-  published   Boolean            @default(false)
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  price       Float       @default(0)
+  featured    Boolean     @default(false)
+  published   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   // Relações
   lessons     Lesson[]
@@ -278,7 +278,7 @@ model Lesson {
   title       String
   description String?
   videoUrl    String
-  duration    Int      // em minutos
+  duration    Int // em minutos
   order       Int
   published   Boolean  @default(false)
   createdAt   DateTime @default(now())
