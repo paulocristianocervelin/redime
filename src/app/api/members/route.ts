@@ -25,11 +25,24 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const departmentId = searchParams.get('departmentId');
 
-    const where: any = { active: true };
+    const where: {
+      active: boolean;
+      memberProfile?: {
+        departments: {
+          some: {
+            departmentId: bigint;
+          };
+        };
+      };
+    } = { active: true };
 
     if (departmentId) {
       where.memberProfile = {
-        departmentId: BigInt(departmentId),
+        departments: {
+          some: {
+            departmentId: BigInt(departmentId),
+          },
+        },
       };
     }
 

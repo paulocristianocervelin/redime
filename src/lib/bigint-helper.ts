@@ -11,6 +11,7 @@ export function serializeBigInt<T>(obj: T): T {
 
 // Adiciona suporte global para BigInt em JSON.stringify
 if (typeof BigInt !== 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (BigInt.prototype as any).toJSON = function () {
     return this.toString();
   };

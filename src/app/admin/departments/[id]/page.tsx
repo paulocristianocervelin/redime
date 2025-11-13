@@ -76,12 +76,6 @@ export default function DepartmentDetailPage() {
   const [department, setDepartment] = useState<Department | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchDepartment();
-    }
-  }, [params.id]);
-
   const fetchDepartment = async () => {
     try {
       const response = await fetch(`/api/departments/${params.id}`);
@@ -98,6 +92,13 @@ export default function DepartmentDetailPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (params.id) {
+      fetchDepartment();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
 
   if (loading) {
     return (

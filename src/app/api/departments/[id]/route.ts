@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isAdmin } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { serializeBigInt } from '@/lib/bigint-helper';
+import { DepartmentCategory } from '@prisma/client';
 
 // GET - Buscar departamento por ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -18,8 +19,9 @@ export async function GET(
       );
     }
 
+    const { id } = await params;
     const department = await prisma.department.findUnique({
-      where: { id: BigInt(params.id) },
+      where: { id: BigInt(id) },
       include: {
         leader: {
           select: {
@@ -68,7 +70,7 @@ export async function GET(
 // PUT - Atualizar departamento (apenas ADMIN)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -90,7 +92,15 @@ export async function PUT(
     const body = await request.json();
     const { name, description, category, leaderId, imageUrl, active } = body;
 
-    const updateData: any = {};
+    const updateData: {
+      name?: string;
+      slug?: string;
+      description?: string;
+      category?: DepartmentCategory;
+      leader?: { connect: { id: bigint } } | { disconnect: true };
+      imageUrl?: string;
+      active?: boolean;
+    } = {};
 
     if (name !== undefined) {
       updateData.name = name;
@@ -103,12 +113,15 @@ export async function PUT(
     }
     if (description !== undefined) updateData.description = description;
     if (category !== undefined) updateData.category = category;
-    if (leaderId !== undefined) updateData.leaderId = leaderId ? BigInt(leaderId) : null;
+    if (leaderId !== undefined) {
+      updateData.leader = leaderId ? { connect: { id: BigInt(leaderId) } } : { disconnect: true };
+    }
     if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
     if (active !== undefined) updateData.active = active;
 
+    const { id } = await params;
     const department = await prisma.department.update({
-      where: { id: BigInt(params.id) },
+      where: { id: BigInt(id) },
       data: updateData,
       include: {
         leader: {
@@ -137,7 +150,7 @@ export async function PUT(
 // DELETE - Deletar departamento (apenas ADMIN)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -156,8 +169,9 @@ export async function DELETE(
       );
     }
 
+    const { id } = await params;
     await prisma.department.delete({
-      where: { id: BigInt(params.id) },
+      where: { id: BigInt(id) },
     });
 
     return NextResponse.json({

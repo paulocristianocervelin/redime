@@ -60,10 +60,16 @@ const DEPARTMENT_CATEGORIES = [
   { value: 'OTHER', label: 'Outro' },
 ];
 
+interface Leader {
+  id: string;
+  name: string;
+  role: string;
+}
+
 export default function DepartmentsPage() {
   const router = useRouter();
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [leaders, setLeaders] = useState<any[]>([]);
+  const [leaders, setLeaders] = useState<Leader[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingDept, setEditingDept] = useState<Department | null>(null);
@@ -98,7 +104,7 @@ export default function DepartmentsPage() {
       const data = await response.json();
       // Filtra apenas LEADER e ADMIN
       const leadersList = (data.members || []).filter(
-        (m: any) => m.role === 'LEADER' || m.role === 'ADMIN'
+        (m: Leader) => m.role === 'LEADER' || m.role === 'ADMIN'
       );
       setLeaders(leadersList);
     } catch (error) {

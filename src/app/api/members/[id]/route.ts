@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser, isLeader, isAdmin, hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { serializeBigInt } from '@/lib/bigint-helper';
+import { UserRole } from '@prisma/client';
 
 // GET - Buscar membro por ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -25,8 +26,9 @@ export async function GET(
       );
     }
 
+    const { id } = await params;
     const member = await prisma.user.findUnique({
-      where: { id: BigInt(params.id) },
+      where: { id: BigInt(id) },
       select: {
         id: true,
         name: true,
@@ -38,7 +40,11 @@ export async function GET(
         updatedAt: true,
         memberProfile: {
           include: {
-            department: true,
+            departments: {
+              include: {
+                department: true,
+              },
+            },
           },
         },
         leaderOfDepartments: true,
@@ -65,7 +71,7 @@ export async function GET(
 // PUT - Atualizar membro (ADMIN e LEADER)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -102,7 +108,8 @@ export async function PUT(
       birthDate,
     } = body;
 
-    const memberId = BigInt(params.id);
+    const { id } = await params;
+    const memberId = BigInt(id);
 
     // Verifica se o membro existe
     const existingMember = await prisma.user.findUnique({
@@ -126,15 +133,30 @@ export async function PUT(
     }
 
     // Preparar dados de atualização do usuário
-    const userData: any = {};
+    const userData: {
+      name?: string;
+      email?: string;
+      password?: string;
+      role?: UserRole;
+      active?: boolean;
+    } = {};
     if (name !== undefined) userData.name = name;
     if (email !== undefined) userData.email = email;
     if (password) userData.password = await hashPassword(password);
-    if (role !== undefined) userData.role = role;
+    if (role !== undefined) userData.role = role as UserRole;
     if (active !== undefined) userData.active = active;
 
     // Preparar dados de atualização do perfil
-    const profileData: any = {};
+    const profileData: {
+      phone?: string;
+      address?: string;
+      number?: string;
+      complement?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+      birthDate?: Date | null;
+    } = {};
     if (phone !== undefined) profileData.phone = phone;
     if (address !== undefined) profileData.address = address;
     if (number !== undefined) profileData.number = number;
@@ -200,7 +222,7 @@ export async function PUT(
 // DELETE - Deletar membro (apenas ADMIN)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -219,8 +241,9 @@ export async function DELETE(
       );
     }
 
+    const { id } = await params;
     await prisma.user.delete({
-      where: { id: BigInt(params.id) },
+      where: { id: BigInt(id) },
     });
 
     return NextResponse.json({

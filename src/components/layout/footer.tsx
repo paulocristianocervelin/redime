@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Facebook, Instagram, Youtube, Twitter, Mail, Phone, MapPin } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();

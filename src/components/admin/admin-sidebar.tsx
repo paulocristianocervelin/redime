@@ -7,7 +7,6 @@ import {
   Users,
   Building2,
   LogOut,
-  Settings,
   Menu,
   X,
 } from 'lucide-react';

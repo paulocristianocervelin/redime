@@ -81,11 +81,17 @@ interface Member {
   } | null;
 }
 
+interface DepartmentOption {
+  id: string;
+  name: string;
+  category: string;
+}
+
 export default function MembersPage() {
   const router = useRouter();
   const addressInputRef = useRef<HTMLInputElement>(null);
   const [members, setMembers] = useState<Member[]>([]);
-  const [departments, setDepartments] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<DepartmentOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | null>(null);
@@ -227,14 +233,29 @@ export default function MembersPage() {
       const method = editingMember ? 'PUT' : 'POST';
 
       // Remove password do payload se estiver vazio na edição
-      const payload = { ...formData };
+      const payload: {
+        name: string;
+        cpf: string;
+        email: string;
+        password?: string;
+        phone: string;
+        address: string;
+        number: string;
+        complement: string;
+        city: string;
+        state: string;
+        zipCode: string;
+        departmentIds: string[];
+        role: string;
+        departmentId?: string | null;
+      } = { ...formData };
       if (editingMember && !payload.password) {
-        delete (payload as any).password;
+        delete payload.password;
       }
 
       // Converter "null" string para null real no departmentId
       if (payload.departmentId === 'null' || payload.departmentId === '') {
-        (payload as any).departmentId = null;
+        payload.departmentId = null;
       }
 
       const response = await fetch(url, {

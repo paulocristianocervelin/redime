@@ -25,7 +25,11 @@ export async function GET() {
         active: true,
         memberProfile: {
           include: {
-            department: true,
+            departments: {
+              include: {
+                department: true,
+              },
+            },
           },
         },
         leaderOfDepartments: true,

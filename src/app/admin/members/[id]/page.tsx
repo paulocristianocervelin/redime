@@ -71,12 +71,6 @@ export default function MemberDetailPage() {
   const [member, setMember] = useState<Member | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchMember();
-    }
-  }, [params.id]);
-
   const fetchMember = async () => {
     try {
       const response = await fetch(`/api/members/${params.id}`);
@@ -93,6 +87,13 @@ export default function MemberDetailPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (params.id) {
+      fetchMember();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
 
   if (loading) {
     return (

@@ -1,8 +1,56 @@
 # Tarefas - Projeto Redime
 
-**Última Atualização**: 07/11/2025
+**Última Atualização**: 07/11/2025 - 18:30
 
 ## ✅ Tarefas Concluídas Recentemente
+
+### FASE 2 - Páginas Principais (07/11/2025) 🎉
+- [x] **Página de Transmissão Ao Vivo (`/live`)** - COMPLETA
+  - [x] Layout completo com player de vídeo (YouTube embed)
+  - [x] Informações do culto atual com metadata
+  - [x] Horários de transmissão (Domingo, Quarta, Sexta)
+  - [x] Badge animado "AO VIVO" quando em transmissão
+  - [x] Placeholder quando sem transmissão
+  - [x] Seção de mensagens recentes
+  - [x] Card de chamada para Sala de Oração
+  - [x] Sidebar com horários, avisos e localização
+  - [x] Responsividade mobile completa
+
+- [x] **Sala de Oração (`/prayer-room`)** - COMPLETA
+  - [x] Layout completo da página
+  - [x] Formulário de pedidos de oração funcional
+  - [x] Categorias de pedidos (7 categorias)
+  - [x] Opção de envio anônimo (checkbox)
+  - [x] Sistema de listagem de pedidos com filtros
+  - [x] Busca de pedidos por texto
+  - [x] Filtro por categoria
+  - [x] Contador de orações por pedido
+  - [x] Badge para pedidos respondidos
+  - [x] Estatísticas (pedidos atendidos, orações, testemunhos)
+  - [x] Seção "Como Funciona" (3 passos)
+  - [x] Versículo bíblico destacado
+  - [x] Informações de privacidade
+
+- [x] **Sistema de Mensagens/Sermões (`/messages`)** - COMPLETA
+  - [x] Página de listagem com grid responsivo
+  - [x] Filtros completos (categoria, pregador, série)
+  - [x] Sistema de busca por título/pregador
+  - [x] Ordenação (recentes, populares, alfabética)
+  - [x] Estatísticas no topo (total mensagens, pregadores, séries, views)
+  - [x] Seção de mensagens em destaque
+  - [x] Cards com thumbnail, duração e visualizações
+  - [x] Badges de categoria e série
+  - [x] Paginação (placeholder)
+  - [x] CTA para transmissão ao vivo
+  - [x] Página individual `/messages/[slug]`
+  - [x] Player de vídeo integrado
+  - [x] Metadata completa (pregador, data, duração, views)
+  - [x] Botões de compartilhar e download
+  - [x] Descrição e escrituras referenciadas
+  - [x] Pontos principais da mensagem
+  - [x] Recursos para download (PDF, guias)
+  - [x] Mensagens relacionadas
+  - [x] Links para série completa e mais do pregador
 
 ### Modernização do Design (07/11/2025)
 - [x] Implementar tema preto e tons de cinza
@@ -19,13 +67,14 @@
 ### Sistema de Autenticação (07/11/2025)
 - [x] Ajustar validade do token JWT para 8 horas
 - [x] Configurar cookie settings (httpOnly, secure, sameSite)
+- [x] Corrigir queries Prisma com relacionamento many-to-many
 
 ### Gerenciamento de Membros (Concluído anteriormente)
 - [x] Implementar CRUD de membros
 - [x] Integração com ViaCEP para auto-fill de endereço
 - [x] Formatação customizada de CPF, telefone e CEP
 - [x] Seleção múltipla de departamentos (checkbox)
-- [x] Permitir admin como líder de departamento
+- [x] Permitar admin como líder de departamento
 - [x] Validação inline (não fecha dialog em erro)
 - [x] Focus management correto após CEP
 
@@ -39,39 +88,9 @@ _Nenhuma tarefa em andamento no momento_
 
 ## 📋 Próximas Tarefas Prioritárias
 
-### FASE 2 - Páginas Principais
+### FASE 2 - Páginas Principais (Continuação)
 
-#### 1. Página de Transmissão Ao Vivo (`/live`)
-- [ ] Criar layout da página `/live`
-- [ ] Integrar player de vídeo (YouTube/Vimeo/Custom)
-- [ ] Adicionar chat ao vivo (opcional)
-- [ ] Implementar controles de player
-- [ ] Adicionar informações sobre o culto atual
-- [ ] Implementar horários de transmissão
-- [ ] Responsividade mobile
-
-#### 2. Sala de Oração (`/prayer-room`)
-- [ ] Criar layout da página `/prayer-room`
-- [ ] Implementar formulário de pedidos de oração
-- [ ] Sistema de listagem de pedidos (moderação)
-- [ ] Contador de orações por pedido
-- [ ] Categorias de pedidos (pessoal, família, saúde, etc.)
-- [ ] Validação de formulário
-- [ ] Notificações de novos pedidos (admin)
-
-#### 3. Sistema de Mensagens/Sermões (`/messages`)
-- [ ] Criar página de listagem `/messages`
-- [ ] Implementar filtros (data, série, pastor, etc.)
-- [ ] Sistema de busca de mensagens
-- [ ] Paginação
-- [ ] Cards com thumbnail e preview
-- [ ] Criar página individual `/messages/[slug]`
-- [ ] Player de vídeo/áudio
-- [ ] Notas e recursos para download
-- [ ] Compartilhamento social
-- [ ] Mensagens relacionadas
-
-#### 4. Calendário de Eventos (`/events`)
+#### 4. Calendário de Eventos (`/events`) - PRÓXIMA PRIORIDADE
 - [ ] Criar página de eventos `/events`
 - [ ] Implementar calendário visual
 - [ ] Cards de eventos (grid view)
