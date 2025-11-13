@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Banco de dados PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: redime-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-redime}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-redime_password_change_in_production}
+      POSTGRES_DB: ${POSTGRES_DB:-redime_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - redime-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-redime}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Aplicação Next.js
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: redime-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Database
+      DATABASE_URL: postgresql://${POSTGRES_USER:-redime}:${POSTGRES_PASSWORD:-redime_password_change_in_production}@postgres:5432/${POSTGRES_DB:-redime_db}
+
+      # JWT Secret (MUDAR EM PRODUÇÃO!)
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+
+      # Next.js
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+
+      # Aplicação
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    networks:
+      - redime-network
+    # Executar migrations antes de iniciar
+    command: >
+      sh -c "
+        npx prisma migrate deploy &&
+        node server.js
+      "
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  redime-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
