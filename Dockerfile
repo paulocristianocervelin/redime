@@ -13,14 +13,11 @@ RUN apk add --no-cache \
 # Definir diretório de trabalho
 WORKDIR /app
 
-# Definir variáveis de ambiente para build
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
 # Copiar arquivos de configuração primeiro
 COPY package*.json ./
 
-# Instalar todas as dependências (dev e prod para build)
+# Instalar todas as dependências (incluindo devDependencies para build)
+# NODE_ENV não deve ser production durante npm install
 RUN npm ci && npm cache clean --force
 
 # Copiar Prisma schema
@@ -31,6 +28,10 @@ RUN npx prisma generate
 
 # Copiar todo o código fonte
 COPY . .
+
+# Definir variáveis de ambiente para build
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build da aplicação Next.js (sem Turbopack para estabilidade no Docker)
 RUN npm run build
