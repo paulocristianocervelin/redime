@@ -38,10 +38,11 @@ COPY --from=deps /app/prisma ./prisma
 COPY . .
 
 # Build da aplicação Next.js
-# Desabilitar telemetria durante build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
+# Build usando webpack (mais estável para Docker)
 RUN npm run build
 
 # ==========================================
