@@ -140,7 +140,7 @@ export default function PrayerRoomPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button
                 onClick={() => setShowForm(true)}
-                className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
               >
                 <Send className="h-4 w-4 mr-2" />
                 Enviar Pedido
@@ -273,7 +273,7 @@ export default function PrayerRoomPage() {
                       <Button
                         type="submit"
                         disabled={loading}
-                        className="flex-1 bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                        className="flex-1 bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
                       >
                         {loading ? (
                           <>
@@ -292,7 +292,7 @@ export default function PrayerRoomPage() {
                         variant="outline"
                         onClick={() => setShowForm(false)}
                         disabled={loading}
-                        className="hover:bg-gray-100 transition-elegant"
+                        className="hover:bg-gray-200 transition-elegant"
                       >
                         Cancelar
                       </Button>
@@ -313,7 +313,7 @@ export default function PrayerRoomPage() {
                   </p>
                   <Button
                     onClick={() => setShowForm(true)}
-                    className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                    className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
                   >
                     <Send className="h-4 w-4 mr-2" />
                     Enviar Meu Pedido
@@ -408,7 +408,7 @@ export default function PrayerRoomPage() {
                             <Button
                               size="sm"
                               onClick={() => handlePray(prayer.id)}
-                              className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm flex-shrink-0"
+                              className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm flex-shrink-0"
                             >
                               <Heart className="h-4 w-4 mr-2" />
                               Orar

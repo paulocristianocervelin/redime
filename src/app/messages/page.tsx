@@ -265,7 +265,7 @@ export default function MessagesPage() {
                     </div>
                     <Button
                       asChild
-                      className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                      className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
                     >
                       <Link href={`/messages/${message.slug}`}>
                         <PlayCircle className="h-4 w-4 mr-2" />
@@ -362,7 +362,7 @@ export default function MessagesPage() {
                     setSelectedSeries('all');
                     setSortBy('recent');
                   }}
-                  className="hover:bg-gray-100 transition-elegant"
+                  className="hover:bg-gray-200 transition-elegant"
                 >
                   Limpar Filtros
                 </Button>
@@ -400,7 +400,7 @@ export default function MessagesPage() {
                   setSelectedPreacher('all');
                   setSelectedSeries('all');
                 }}
-                className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
               >
                 Limpar Filtros
               </Button>
@@ -452,7 +452,7 @@ export default function MessagesPage() {
                   <Button
                     asChild
                     size="sm"
-                    className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                    className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
                   >
                     <Link href={`/messages/${message.slug}`}>
                       <PlayCircle className="h-4 w-4 mr-2" />
@@ -472,20 +472,20 @@ export default function MessagesPage() {
               <Button
                 variant="outline"
                 disabled
-                className="hover:bg-gray-100 transition-elegant"
+                className="hover:bg-gray-200 transition-elegant"
               >
                 Anterior
               </Button>
               <Button className="bg-black text-white hover:bg-gray-800 transition-elegant">
                 1
               </Button>
-              <Button variant="outline" className="hover:bg-gray-100 transition-elegant">
+              <Button variant="outline" className="hover:bg-gray-200 transition-elegant">
                 2
               </Button>
-              <Button variant="outline" className="hover:bg-gray-100 transition-elegant">
+              <Button variant="outline" className="hover:bg-gray-200 transition-elegant">
                 3
               </Button>
-              <Button variant="outline" className="hover:bg-gray-100 transition-elegant">
+              <Button variant="outline" className="hover:bg-gray-200 transition-elegant">
                 Próximo
               </Button>
             </div>
@@ -504,7 +504,7 @@ export default function MessagesPage() {
             </p>
             <Button
               asChild
-              className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+              className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
             >
               <Link href="/live">
                 <Video className="h-4 w-4 mr-2" />

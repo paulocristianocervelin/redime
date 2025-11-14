@@ -41,13 +41,13 @@ export default function Home() {
               <span className="text-gray-200">Mesa & Discipulado</span>
             </h1>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" asChild className="text-lg bg-white text-black hover:bg-gray-100 shadow-modern transition-elegant">
+              <Button size="lg" asChild className="text-lg bg-white text-black hover:bg-gray-200 shadow-modern transition-elegant">
                 <Link href="/live">
                   <Play className="mr-2 h-5 w-5" />
                   Transmissão Ao Vivo
                 </Link>
               </Button>
-              <Button size="lg" asChild className="text-lg bg-white text-black border border-white hover:bg-gray-100 transition-elegant shadow-modern">
+              <Button size="lg" asChild className="text-lg bg-white text-black border border-white hover:bg-gray-200 transition-elegant shadow-modern">
                 <Link href="/messages">
                   Ver Mensagens
                 </Link>
@@ -72,7 +72,7 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                   <Link href="/live">Assistir Agora</Link>
                 </Button>
               </CardContent>
@@ -89,7 +89,7 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                   <Link href="/prayer-room">Entrar na Sala</Link>
                 </Button>
               </CardContent>
@@ -119,7 +119,7 @@ export default function Home() {
                   <CardDescription>Pastor João Silva • 15 de Outubro, 2024</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                  <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                     <Link href={`/messages/${i}`}>Assistir Mensagem</Link>
                   </Button>
                 </CardContent>
@@ -127,7 +127,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-8">
-            <Button asChild size="lg" className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+            <Button asChild size="lg" className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
               <Link href="/messages">Ver Todas as Mensagens</Link>
             </Button>
           </div>
@@ -155,7 +155,7 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                   <Link href="/courses">Explorar Cursos</Link>
                 </Button>
               </CardContent>
@@ -172,7 +172,7 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                   <Link href="/events">Ver Eventos</Link>
                 </Button>
               </CardContent>
@@ -189,7 +189,7 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                   <Link href="/ministries/music">Conhecer Música</Link>
                 </Button>
               </CardContent>
@@ -206,7 +206,7 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                   <Link href="/podcast">Ouvir Podcast</Link>
                 </Button>
               </CardContent>
@@ -230,7 +230,7 @@ export default function Home() {
                   <CardTitle className="text-lg font-semibold text-black">Torne-se Membro</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                  <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                     <Link href="/get-involved/membership">Saiba Mais</Link>
                   </Button>
                 </CardContent>
@@ -242,7 +242,7 @@ export default function Home() {
                   <CardTitle className="text-lg font-semibold text-black">Seja Voluntário</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                  <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                     <Link href="/get-involved/volunteer">Servir</Link>
                   </Button>
                 </CardContent>
@@ -254,7 +254,7 @@ export default function Home() {
                   <CardTitle className="text-lg font-semibold text-black">Conheça Mais</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                  <Button asChild className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                     <Link href="/about/new-here">Sou Novo</Link>
                   </Button>
                 </CardContent>
@@ -274,7 +274,7 @@ export default function Home() {
                 Fique por dentro das novidades da comunidade
               </p>
             </div>
-            <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+            <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
               <Link href="/blog">Ver Tudo</Link>
             </Button>
           </div>
@@ -296,7 +296,7 @@ export default function Home() {
                     Resumo breve da notícia ou artigo que será exibido aqui para dar uma prévia do
                     conteúdo completo...
                   </p>
-                  <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm">
+                  <Button asChild className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm">
                     <Link href={`/blog/${i}`}>Ler Mais</Link>
                   </Button>
                 </CardContent>

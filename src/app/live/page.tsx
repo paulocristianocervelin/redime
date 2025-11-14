@@ -118,7 +118,7 @@ export default function LivePage() {
                       </p>
                       <Button
                         asChild
-                        className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                        className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
                       >
                         <Link href="/messages">Ver Mensagens Anteriores</Link>
                       </Button>
@@ -193,7 +193,7 @@ export default function LivePage() {
                   </div>
                   <Button
                     asChild
-                    className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm flex-shrink-0"
+                    className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm flex-shrink-0"
                   >
                     <Link href="/prayer-room">Enviar Pedido</Link>
                   </Button>
@@ -280,14 +280,14 @@ export default function LivePage() {
                 <div className="flex flex-col gap-2">
                   <Button
                     asChild
-                    className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                    className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
                   >
                     <Link href="/about/new-here">Sou Novo Aqui</Link>
                   </Button>
                   <Button
                     asChild
                     variant="outline"
-                    className="w-full hover:bg-gray-100 transition-elegant"
+                    className="w-full hover:bg-gray-200 transition-elegant"
                   >
                     <Link href="/events">Ver Próximos Eventos</Link>
                   </Button>
@@ -308,7 +308,7 @@ export default function LivePage() {
             </div>
             <Button
               asChild
-              className="bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+              className="bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
             >
               <Link href="/messages">Ver Todas</Link>
             </Button>
@@ -340,7 +340,7 @@ export default function LivePage() {
                   <Button
                     asChild
                     size="sm"
-                    className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                    className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
                   >
                     <Link href={`/messages/${item}`}>Assistir</Link>
                   </Button>

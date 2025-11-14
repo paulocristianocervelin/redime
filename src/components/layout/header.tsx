@@ -43,7 +43,7 @@ export function Header() {
               <NavigationMenuList className="gap-1">
                 {/* Sobre Nós */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="h-10 px-4 text-sm font-medium transition-elegant hover:bg-gray-100">
+                  <NavigationMenuTrigger className="h-10 px-4 text-sm font-medium transition-elegant hover:bg-gray-200">
                     Sobre Nós
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -54,9 +54,6 @@ export function Header() {
                       <ListItem href="/about/history" title="Nossa História">
                         Como tudo começou
                       </ListItem>
-                      <ListItem href="/about/team" title="Nossa Equipe">
-                        Conheça quem faz acontecer
-                      </ListItem>
                       <ListItem href="/about/leaders" title="Líderes">
                         Nossa liderança pastoral
                       </ListItem>
@@ -66,7 +63,7 @@ export function Header() {
 
                 {/* Envolva-se */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="h-10 px-4 text-sm font-medium transition-elegant hover:bg-gray-100">
+                  <NavigationMenuTrigger className="h-10 px-4 text-sm font-medium transition-elegant hover:bg-gray-200">
                     Envolva-se
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -89,7 +86,7 @@ export function Header() {
 
                 {/* Recursos */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="h-10 px-4 text-sm font-medium transition-elegant hover:bg-gray-100">
+                  <NavigationMenuTrigger className="h-10 px-4 text-sm font-medium transition-elegant hover:bg-gray-200">
                     Recursos
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -112,19 +109,19 @@ export function Header() {
 
                 {/* Links simples */}
                 <NavigationMenuItem>
-                  <Link href="/events" className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-elegant hover:bg-gray-100 focus:outline-none")}>
+                  <Link href="/events" className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-elegant hover:bg-gray-200 focus:outline-none")}>
                     Eventos
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link href="/prayer-room" className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-elegant hover:bg-gray-100 focus:outline-none")}>
+                  <Link href="/prayer-room" className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-elegant hover:bg-gray-200 focus:outline-none")}>
                     Sala de Oração
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link href="/live" className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-elegant hover:bg-gray-100 focus:outline-none")}>
+                  <Link href="/live" className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-elegant hover:bg-gray-200 focus:outline-none")}>
                     Ao Vivo
                   </Link>
                 </NavigationMenuItem>
@@ -135,7 +132,7 @@ export function Header() {
               <Link href="/donate">Doar</Link>
             </Button>
 
-            <Button asChild size="default" variant="outline" className="ml-2 hover:bg-gray-100 transition-elegant">
+            <Button asChild size="default" variant="outline" className="ml-2 hover:bg-gray-200 transition-elegant">
               <Link href="/auth/login">Login</Link>
             </Button>
           </nav>
@@ -152,7 +149,7 @@ export function Header() {
               <nav className="flex flex-col gap-6 mt-8">
                 <Link
                   href="/"
-                  className="text-lg font-semibold hover:bg-gray-100 transition-elegant rounded-md px-2 py-1"
+                  className="text-lg font-semibold hover:bg-gray-200 transition-elegant rounded-md px-2 py-1"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Início
@@ -165,28 +162,21 @@ export function Header() {
                   <div className="flex flex-col gap-3 pl-4 border-l-2 border-gray-200">
                     <Link
                       href="/about/new-here"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Sou Novo Aqui
                     </Link>
                     <Link
                       href="/about/history"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Nossa História
                     </Link>
                     <Link
-                      href="/about/team"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Nossa Equipe
-                    </Link>
-                    <Link
                       href="/about/leaders"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Líderes
@@ -201,28 +191,28 @@ export function Header() {
                   <div className="flex flex-col gap-3 pl-4 border-l-2 border-gray-200">
                     <Link
                       href="/get-involved/membership"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Torne-se Membro
                     </Link>
                     <Link
                       href="/get-involved/volunteer"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Seja Voluntário
                     </Link>
                     <Link
                       href="/get-involved/baptism"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Batismo
                     </Link>
                     <Link
                       href="/ministries"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Ministérios
@@ -237,28 +227,28 @@ export function Header() {
                   <div className="flex flex-col gap-3 pl-4 border-l-2 border-gray-200">
                     <Link
                       href="/messages"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Mensagens
                     </Link>
                     <Link
                       href="/courses"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Cursos
                     </Link>
                     <Link
                       href="/podcast"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Podcast
                     </Link>
                     <Link
                       href="/blog"
-                      className="text-sm hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                      className="text-sm hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Blog
@@ -269,21 +259,21 @@ export function Header() {
                 <div className="border-t pt-4 space-y-3">
                   <Link
                     href="/events"
-                    className="block text-base font-medium hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                    className="block text-base font-medium hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Eventos
                   </Link>
                   <Link
                     href="/prayer-room"
-                    className="block text-base font-medium hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                    className="block text-base font-medium hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sala de Oração
                   </Link>
                   <Link
                     href="/live"
-                    className="block text-base font-medium hover:bg-gray-100 transition-elegant rounded px-2 py-1"
+                    className="block text-base font-medium hover:bg-gray-200 transition-elegant rounded px-2 py-1"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Ao Vivo
@@ -297,7 +287,7 @@ export function Header() {
                     </Link>
                   </Button>
 
-                  <Button asChild className="w-full hover:bg-gray-100 transition-elegant" size="lg" variant="outline">
+                  <Button asChild className="w-full hover:bg-gray-200 transition-elegant" size="lg" variant="outline">
                     <Link href="/auth/login" onClick={() => setIsMobileMenuOpen(false)}>
                       Login
                     </Link>
@@ -330,7 +320,7 @@ const ListItem = ({
         <Link
           href={href}
           className={cn(
-            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-elegant hover:bg-gray-100 focus:outline-none',
+            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-elegant hover:bg-gray-200 focus:outline-none',
             className
           )}
           {...props}

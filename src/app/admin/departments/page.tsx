@@ -428,7 +428,7 @@ export default function DepartmentsPage() {
                 type="submit"
                 variant="outline"
                 disabled={submitting}
-                className="hover:bg-primary hover:text-white transition-colors"
+                className="hover:bg-gray-200 transition-elegant"
               >
                 {submitting ? (
                   <>

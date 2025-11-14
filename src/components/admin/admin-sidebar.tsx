@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -68,9 +69,19 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
 
   const SidebarContent = () => (
     <>
-      {/* Header com gradiente */}
+      {/* Header com gradiente e logo */}
       <div className="px-6 py-8 gradient-bg-blue">
-        <h2 className="text-xl font-bold text-white">Painel Admin</h2>
+        <div className="mb-4">
+          <Image
+            src="/imagens/logo_Prancheta-red.png"
+            alt="Missão Redime Logo"
+            width={180}
+            height={60}
+            className="mb-3"
+            priority
+          />
+          <h2 className="text-lg font-semibold text-white/90">Painel Admin</h2>
+        </div>
         <p className="text-sm text-white/90 mt-2">{user.name}</p>
         <p className="text-xs text-white/70 mt-1 px-2 py-1 bg-white/10 rounded-full inline-block">{user.role}</p>
       </div>
@@ -87,7 +98,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
               className={
                 isActive
                   ? 'flex items-center gap-3 px-4 py-3 rounded-lg transition-elegant bg-black text-white shadow-sm font-semibold'
-                  : 'flex items-center gap-3 px-4 py-3 rounded-lg transition-elegant text-gray-700 hover:bg-gray-100'
+                  : 'flex items-center gap-3 px-4 py-3 rounded-lg transition-elegant text-gray-700 hover:bg-gray-200'
               }
             >
               <item.icon className="h-5 w-5" />
@@ -102,7 +113,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
         <Button
           onClick={handleLogout}
           variant="ghost"
-          className="w-full justify-start text-gray-700 hover:bg-gray-100 transition-elegant"
+          className="w-full justify-start text-gray-700 hover:bg-gray-200 transition-elegant"
         >
           <LogOut className="h-5 w-5 mr-3" />
           Sair

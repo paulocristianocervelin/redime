@@ -107,7 +107,7 @@ export default function MessagePage({ params }: { params: Promise<{ slug: string
             asChild
             variant="ghost"
             size="sm"
-            className="hover:bg-gray-100 transition-elegant"
+            className="hover:bg-gray-200 transition-elegant"
           >
             <Link href="/messages">
               <ChevronLeft className="h-4 w-4 mr-1" />
@@ -187,14 +187,14 @@ export default function MessagePage({ params }: { params: Promise<{ slug: string
                   <Button
                     onClick={handleShare}
                     variant="outline"
-                    className="flex-1 sm:flex-initial hover:bg-gray-100 transition-elegant"
+                    className="flex-1 sm:flex-initial hover:bg-gray-200 transition-elegant"
                   >
                     <Share2 className="h-4 w-4 mr-2" />
                     {copied ? 'Link Copiado!' : 'Compartilhar'}
                   </Button>
                   <Button
                     variant="outline"
-                    className="flex-1 sm:flex-initial hover:bg-gray-100 transition-elegant"
+                    className="flex-1 sm:flex-initial hover:bg-gray-200 transition-elegant"
                   >
                     <Download className="h-4 w-4 mr-2" />
                     Baixar Áudio
@@ -277,7 +277,7 @@ export default function MessagePage({ params }: { params: Promise<{ slug: string
                 </p>
                 <Button
                   asChild
-                  className="w-full bg-white text-black border border-gray-200 hover:bg-gray-100 transition-elegant shadow-sm"
+                  className="w-full bg-white text-black border border-gray-200 hover:bg-gray-200 transition-elegant shadow-sm"
                 >
                   <Link href="/live">
                     <Video className="h-4 w-4 mr-2" />
@@ -336,7 +336,7 @@ export default function MessagePage({ params }: { params: Promise<{ slug: string
                   <Button
                     asChild
                     variant="outline"
-                    className="w-full hover:bg-gray-100 transition-elegant"
+                    className="w-full hover:bg-gray-200 transition-elegant"
                   >
                     <Link href={`/messages?series=${encodeURIComponent(message.series)}`}>
                       Ver Série Completa
@@ -358,7 +358,7 @@ export default function MessagePage({ params }: { params: Promise<{ slug: string
                 <Button
                   asChild
                   variant="outline"
-                  className="w-full hover:bg-gray-100 transition-elegant"
+                  className="w-full hover:bg-gray-200 transition-elegant"
                 >
                   <Link href={`/messages?preacher=${encodeURIComponent(message.preacher)}`}>
                     Ver Todas as Mensagens
