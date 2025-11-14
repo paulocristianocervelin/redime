@@ -78,6 +78,19 @@
 - [x] Validação inline (não fecha dialog em erro)
 - [x] Focus management correto após CEP
 
+### Página de Ministérios (14/11/2025)
+- [x] **Página de Ministérios (`/ministries`)** - COMPLETA
+  - [x] Listagem dinâmica de ministérios do banco de dados
+  - [x] Layout responsivo em grid (1/2/3 colunas)
+  - [x] Cards com informações completas (nome, descrição, líder, membros)
+  - [x] Badges coloridos por categoria (15 categorias)
+  - [x] Suporte para imagens de ministérios
+  - [x] Contador de membros por ministério
+  - [x] Informações do líder
+  - [x] Estado vazio quando não há ministérios
+  - [x] Ordenação automática por categoria e nome
+  - [x] Hover effects e sombras elegantes
+
 ---
 
 ## 🔄 Tarefas em Andamento
@@ -87,6 +100,85 @@ _Nenhuma tarefa em andamento no momento_
 ---
 
 ## 📋 Próximas Tarefas Prioritárias
+
+### 🎥 INTEGRAÇÃO YOUTUBE DATA API V3 - PENDENTE
+
+#### Visão Geral
+Sistema de sincronização automática de vídeos do YouTube com o site, eliminando necessidade de cadastro manual.
+
+**Benefícios:**
+- ✅ 100% Gratuito (até 10.000 requisições/dia - uso estimado: ~5.400/dia)
+- ✅ Sincronização automática de vídeos do canal
+- ✅ Detecção de lives ao vivo em tempo real
+- ✅ Cache no banco de dados para melhor performance
+- ✅ Sem custos adicionais para volume de igreja
+
+#### Pré-requisitos (Ação do Usuário)
+
+**1. Criar API Key do YouTube:**
+- Acessar: https://console.cloud.google.com/
+- Criar projeto: "Missão Redime Site"
+- Ativar "YouTube Data API v3"
+- Criar credenciais → API Key
+- Configurar restrições de segurança:
+  - HTTP referrers: `https://seudominio.com/*`
+  - API restrictions: Apenas "YouTube Data API v3"
+
+**2. Obter Channel ID:**
+- URL do canal: `youtube.com/channel/UCxxxxxxxxxxxxxxxxxxxxx`
+- Ou em: https://www.youtube.com/account_advanced
+
+**3. Obter Playlist IDs (opcional):**
+- Playlist de Mensagens: `PLxxxxxxxxxxxxxxxxxxxxx`
+- Playlist de Lives: `PLxxxxxxxxxxxxxxxxxxxxx`
+
+#### Implementação Técnica
+
+**Estrutura do Banco de Dados:**
+- [ ] Adicionar tabela `Video` no Prisma Schema
+  - Campos: videoId, title, description, thumbnail, publishedAt, category, duration, viewCount, cachedAt
+  - Enums: VideoCategory (GENERAL, MESSAGE, LIVE, WORSHIP, TESTIMONY, TEACHING)
+- [ ] Executar migration: `npx prisma migrate dev --name add_youtube_videos`
+
+**Backend (API Routes):**
+- [ ] Criar `src/lib/youtube.ts` - Utilitário de integração com YouTube API
+  - fetchChannelVideos(channelId, maxResults)
+  - fetchPlaylistVideos(playlistId, maxResults)
+  - checkLiveStream(channelId)
+- [ ] Criar `/api/youtube/sync` - Sincroniza vídeos (POST, apenas ADMIN)
+- [ ] Criar `/api/youtube/videos` - Lista vídeos do cache (GET, público)
+- [ ] Criar `/api/youtube/live` - Verifica live ao vivo (GET, público)
+
+**Frontend:**
+- [ ] Atualizar `/live` - Detectar e exibir live automaticamente
+- [ ] Atualizar `/messages` - Listar vídeos do cache com paginação
+- [ ] Criar `/admin/youtube` - Painel de sincronização manual
+
+**Variáveis de Ambiente (.env):**
+```env
+YOUTUBE_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXX
+YOUTUBE_CHANNEL_ID=UCxxxxxxxxxxxxxxxxxxxxx
+YOUTUBE_PLAYLIST_MESSAGES=PLxxxxxxxxxxxxxxxxxxxxx
+YOUTUBE_CACHE_TTL=1800  # 30 minutos
+```
+
+**Uso de Quota (Estimativa diária):**
+| Operação | Custo/unidade | Frequência | Total |
+|----------|---------------|------------|-------|
+| Listar vídeos | 100 | 4x/dia | 400 |
+| Verificar live | 100 | 48x/dia | 4.800 |
+| Detalhes vídeos | 1 | 200x/dia | 200 |
+| **TOTAL** | - | - | **5.400/10.000** ✅ |
+
+**Segurança:**
+- ✅ API Key apenas no servidor (não exposta ao cliente)
+- ✅ Restrições de IP/Referenciador no Google Cloud
+- ✅ Endpoint de sync protegido (apenas ADMIN)
+- ✅ Cache reduz chamadas à API
+
+**Status:** Aguardando credenciais do YouTube para implementação
+
+---
 
 ### FASE 2 - Páginas Principais (Continuação)
 
