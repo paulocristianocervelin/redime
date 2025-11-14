@@ -12,7 +12,12 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Missão Redime Chapecó - Amor, Verdade, Mesa & Discipulado",
+  description: "Igreja cristã em Chapecó - SC. Experimente uma comunidade focada em amor, verdade e discipulado genuíno.",
   keywords: ["igreja", "cristianismo", "adoração", "oração", "comunidade", "redime", "chapecó", "missão", "discipulado"],
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
 };
 
 export default function RootLayout({
